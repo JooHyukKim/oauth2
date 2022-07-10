@@ -47,7 +47,15 @@ public class Oauth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
   // client 설정
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-    clients.jdbc(dataSource);
+    clients.inMemory() //클라이언트정보는 메모리에서 바로 조회
+      .withClient("clientId") // 클라이언트 아이디
+      .secret("{noop}secretKey") // 시크릿키 ({} 안에 암호화 알고리즘을 명시 하면 된다. 암호화가 되어 있지 않다면 {noop}로 설정 해야 한다. 실제 요청은 암호화 방식인 {noop}를 입력 하지 않아도 된다.)
+      .authorizedGrantTypes("authorization_code", "password", "refresh_token", "client_credentials") // 가능한 토큰 발행 타입
+      .scopes("read", "write") // 가능한 접근 범위
+      .accessTokenValiditySeconds(15) // 토큰 유효 시간 : 1분
+      .refreshTokenValiditySeconds(60 * 60) // 토큰 유효 시간 : 1시간
+      .redirectUris("http://localhost:8081/callback") // 가능한 redirect uri
+      .autoApprove(true); // 권한 동의는 자동으로 yes (false 로 할시 권한 동의
   }
 
   // 토큰 DB 저장
