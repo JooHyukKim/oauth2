@@ -1,6 +1,6 @@
 package com.code.vo;
 
-import lombok.Data;
+import com.code.controller.request.JoinRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +28,6 @@ public class User implements UserDetails {
   @Column(length = 100)
   private String password;
 
-
   @Column(nullable = false, unique = true, length = 500)
   private String email;
 
@@ -40,10 +39,8 @@ public class User implements UserDetails {
 
   @Column(nullable = true, unique = false)
   private String state; // Y : 정상 회원 , L : 잠긴 계정, P : 패스워드 만료, A : 계정 만료
+  private static final String DEFAULT_STATE = "Y";
 
-  // security 기본 회원 정보인 UserDetails 클래스 implement 하기 위한 기본 함수들..
-
-  // 권한 (기본 권한 셋팅)
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -93,4 +90,15 @@ public class User implements UserDetails {
     }
     return false;
   }
+
+  public static User makeFrom(JoinRequest joinRequest) {
+    User user = new User();
+    user.setUsername(joinRequest.getUsername());
+    user.setPassword(joinRequest.getPassword());
+    user.setEmail(joinRequest.getEmail());
+    user.setState(DEFAULT_STATE);
+    user.setNickname(joinRequest.getUsername());
+    return user;
+  }
+
 }

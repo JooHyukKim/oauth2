@@ -17,45 +17,48 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
+  @Autowired
+  private CustomAuthenticationProvider customAuthenticationProvider;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable() // csrf 공격을 막기 위해 state 값을 전달 받지 않는다
-                .formLogin() // 로그인 페이지 설정
-                .loginPage("/oauth/login")
-                .failureHandler(failureHandler()) // 로그인 실패 custom
-                .successHandler(successHandler()) // 로그인 성공 custom
-                .and()
-                .httpBasic(); // http 통신으로 basic auth를 사용 할 수 있다. (ex: Authorization: Basic bzFbdGfmZrptWY30YQ==)
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable() // csrf 공격을 막기 위해 state 값을 전달 받지 않는다
+      .formLogin() // 로그인 페이지 설정
+      .loginPage("/oauth/login")
+      .failureHandler(failureHandler()) // 로그인 실패 custom
+      .successHandler(successHandler()) // 로그인 성공 custom
+      .and()
+      .authorizeRequests().antMatchers("/user/**").permitAll()
+      .and()
+      .httpBasic(); // http 통신으로 basic auth를 사용 할 수 있다. (ex: Authorization: Basic bzFbdGfmZrptWY30YQ==)
+  }
 
-    /**
-     * authenticationManager bean 생성 하여 셋팅 안할시 grant_type : password 지원 안함
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
+  /**
+   * authenticationManager bean 생성 하여 셋팅 안할시 grant_type : password 지원 안함
+   *
+   * @return
+   * @throws Exception
+   */
+  @Bean
+  @Override
+  protected AuthenticationManager authenticationManager() throws Exception {
+    return super.authenticationManager();
+  }
 
-    // 커스텀 인증 : 어떤 사용자인지 확인하는 메소드 커스텀
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(customAuthenticationProvider);
-    }
+  // 커스텀 인증 : 어떤 사용자인지 확인하는 메소드 커스텀
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(customAuthenticationProvider);
+  }
 
-    @Bean
-    public AuthenticationFailureHandler failureHandler(){
-        return new CustomFailHandler();
-    }
+  @Bean
+  public AuthenticationFailureHandler failureHandler() {
+    return new CustomFailHandler();
+  }
 
-    @Bean
-    public AuthenticationSuccessHandler successHandler(){
-        return new CustomSuccessHandler();
-    }
+  @Bean
+  public AuthenticationSuccessHandler successHandler() {
+    return new CustomSuccessHandler();
+  }
 
 }
