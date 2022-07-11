@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -52,7 +53,7 @@ public class Oauth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
       .secret("{noop}secretKey") // 시크릿키 ({} 안에 암호화 알고리즘을 명시 하면 된다. 암호화가 되어 있지 않다면 {noop}로 설정 해야 한다. 실제 요청은 암호화 방식인 {noop}를 입력 하지 않아도 된다.)
       .authorizedGrantTypes("authorization_code", "password", "refresh_token", "client_credentials") // 가능한 토큰 발행 타입
       .scopes("read", "write") // 가능한 접근 범위
-      .accessTokenValiditySeconds(300) // 토큰 유효 시간 : 5분
+      .accessTokenValiditySeconds(60 * 10) // 토큰 유효 시간 : 10분
       .refreshTokenValiditySeconds(60 * 60) // 토큰 유효 시간 : 1시간
       .redirectUris("http://localhost:8081/callback") // 가능한 redirect uri
       .autoApprove(true); // 권한 동의는 자동으로 yes (false 로 할시 권한 동의
