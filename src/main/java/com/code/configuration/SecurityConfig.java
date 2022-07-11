@@ -5,13 +5,18 @@ import com.code.handler.CustomSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity // 웹보안 활성화
 @Configuration
@@ -22,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable() // csrf 공격을 막기 위해 state 값을 전달 받지 않는다
+    http.cors().and().csrf().disable()// csrf 공격을 막기 위해 state 값을 전달 받지 않는다
       .formLogin() // 로그인 페이지 설정
       .loginPage("/oauth/login")
       .failureHandler(failureHandler()) // 로그인 실패 custom
@@ -31,6 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .authorizeRequests().antMatchers("/user/**").permitAll()
       .and()
       .httpBasic(); // http 통신으로 basic auth를 사용 할 수 있다. (ex: Authorization: Basic bzFbdGfmZrptWY30YQ==)
+  }
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers(HttpMethod.OPTIONS, "/oauth/token");
   }
 
   /**
@@ -61,4 +71,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new CustomSuccessHandler();
   }
 
+  @Bean
+  public CorsFilter corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("http://localhost:3000");
+    config.addAllowedHeader("*");
+    config.addAllowedHeader("Authorization");
+    config.addAllowedMethod("*");
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
+  }
 }
