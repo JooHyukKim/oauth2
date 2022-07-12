@@ -20,3 +20,8 @@ server:
 #  servlet:
 #    session:
 #      timeout: 10 # 세션 저장소(redis) 따로 지정 안할시 해당 설정으로 세션 시간 설정 / 기본 30분이며 60s 미만 설정시 60s로 된다.
+
+oauth2:
+  validity-seconds:
+    access-token: 10
+    refresh-token: 3600

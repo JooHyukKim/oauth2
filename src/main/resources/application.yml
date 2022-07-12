@@ -9,8 +9,8 @@ spring:
     show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    hibernate:
-#      ddl-auto: none # 필요시 create 으로 변경후 사용
+  #    hibernate:
+  #      ddl-auto: none # 필요시 create 으로 변경후 사용
   main:
     allow-bean-definition-overriding: true # userDetailService 기존 스프링 제공 함수 안쓰고 정의 함수로 바꾸기 위한 설정
 server:
@@ -22,3 +22,8 @@ server:
 #  servlet:
 #    session:
 #      timeout: 10 # 세션 저장소(redis) 따로 지정 안할시 해당 설정으로 세션 시간 설정 / 기본 30분이며 60s 미만 설정시 60s로 된다.
+
+oauth2:
+  validity-seconds:
+    access-token: 10
+    refresh-token: 3600
