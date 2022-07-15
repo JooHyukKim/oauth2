@@ -1,55 +1,92 @@
--- 사용자 테이블
-CREATE TABLE IF NOT EXISTS user(
-    id varchar(20),
-    password varchar(100),
-    nickname varchar(100),
-    state char(1)
+-- we don't know how to generate root <with-no-name> (class Root) :(
+grant binlog monitor, process, select on *.* to exporter;
+
+grant alter, alter routine, binlog admin, binlog monitor, binlog replay, connection admin, create, create routine, create tablespace, create temporary tables, create user, create view, delete, delete history, drop, event, execute, federated admin, file, index, insert, lock tables, process, read_only admin, references, reload, replication master admin, replication slave, replication slave admin, select, set user, show databases, show view, shutdown, slave monitor, super, trigger, update, grant option on *.* to root;
+
+grant alter, alter routine, binlog admin, binlog monitor, binlog replay, connection admin, create, create routine, create tablespace, create temporary tables, create user, create view, delete, delete history, drop, event, execute, federated admin, file, index, insert, lock tables, process, read_only admin, references, reload, replication master admin, replication slave, replication slave admin, select, set user, show databases, show view, shutdown, slave monitor, super, trigger, update, grant option on *.* to root@localhost;
+
+create table content
+(
+    content_id         bigint auto_increment
+        primary key,
+    created_date       datetime(6) null,
+    last_modified_date datetime(6) null,
+    content            text        null
 );
 
--- access token 테이블 > jwt 아닐때 유효 토큰 검증시 사용
-CREATE TABLE IF NOT EXISTS `oauth_access_token`
+create table topic
 (
-    `token_id`          VARCHAR(256) NULL,
-    `token`             BLOB         NULL,
-    `authentication_id` VARCHAR(256) NOT NULL,
-    `user_name`         VARCHAR(256) NULL,
-    `client_id`         VARCHAR(256) NULL,
-    `authentication`    BLOB         NULL,
-    `refresh_token`     VARCHAR(256) NULL,
-    PRIMARY KEY (`authentication_id`)
-);
--- refresh token 테이블 > jwt 아닐때 유효 토큰 검증시 사용
-CREATE TABLE IF NOT EXISTS `oauth_refresh_token`
-(
-    `token_id`       VARCHAR(256) NULL,
-    `token`          BLOB         NULL,
-    `authentication` BLOB         NULL
+    topic_id           bigint auto_increment
+        primary key,
+    created_date       datetime(6) null,
+    last_modified_date datetime(6) null
 );
 
--- 클라이언트 정보 테이블
-CREATE TABLE IF NOT EXISTS `oauth_client_details`
+create table post
 (
-    `client_id`               VARCHAR(256)  NOT NULL,
-    `resource_ids`            VARCHAR(256)  NULL,
-    `client_secret`           VARCHAR(256)  NULL,
-    `scope`                   VARCHAR(256)  NULL,
-    `authorized_grant_types`  VARCHAR(256)  NULL,
-    `web_server_redirect_uri` VARCHAR(256)  NULL,
-    `authorities`             VARCHAR(256)  NULL,
-    `access_token_validity`   INT           NULL,
-    `refresh_token_validity`  INT           NULL,
-    `additional_information`  VARCHAR(4096) NULL,
-    `autoapprove`             VARCHAR(256)  NULL,
-    PRIMARY KEY (`client_id`)
+    post_id            bigint auto_increment
+        primary key,
+    created_date       datetime(6)  null,
+    last_modified_date datetime(6)  null,
+    title              varchar(255) not null,
+    user_id            bigint       null,
+    content_id         bigint       not null,
+    topic_id           bigint       not null,
+    constraint FK79iwu5iebbm8oh39jgml3vp48
+        foreign key (content_id) references content (content_id),
+    constraint FKg8ln3nj8tjclai0nuvpw5s5uw
+        foreign key (topic_id) references topic (topic_id)
 );
 
--- 권한 관리 테이블
-create table oauth_approvals
+create index paging_idx
+    on post (topic_id desc, created_date asc);
+
+create table user
 (
-    userId         VARCHAR(256),
-    clientId       VARCHAR(256),
-    scope          VARCHAR(256),
-    status         VARCHAR(10),
-    expiresAt      TIMESTAMP,
-    lastModifiedAt TIMESTAMP
+    user_id            bigint      not null
+        primary key,
+    created_date       datetime(6) null,
+    last_modified_date datetime(6) null
 );
+
+
+create
+definer = root@`%` procedure SMART_DATA(IN AMOUNT int)
+BEGIN
+
+    DECLARE COUNTER INT DEFAULT 1;
+    DECLARE RANDOM_TOPIC_ID INT;
+    DECLARE USER_ID INT;
+    DECLARE CONTENT_ID INT;
+    DECLARE TOPIC_ID INT;
+
+    WHILE COUNTER <= AMOUNT
+        DO
+            #         content
+            insert into post.content (created_date, last_modified_date, content)
+            values (curdate(), curdate(), MD5(RAND()));
+
+            SET CONTENT_ID = (SELECT LAST_INSERT_ID());
+
+            #topic
+SET RANDOM_TOPIC_ID = (SELECT FLOOR(100 + RAND() * (229000 - 100 + 1)));
+            SET USER_ID = (SELECT ELT(FLOOR(RAND() * 8) + 1, 1, 8, 9, 10, 11, 12, 13, 14));
+
+            # post
+            insert delayed into post.post (created_date, last_modified_date, title, content_id, topic_id, user_id)
+            values (curdate(), curdate(), MD5(RAND()), CONTENT_ID, RANDOM_TOPIC_ID, USER_ID);
+
+            SET COUNTER = COUNTER + 1;
+
+END WHILE;
+
+END;
+
+create
+definer = root@`%` procedure makeContent()
+BEGIN
+insert into post.content (created_date, last_modified_date, content)
+values (curdate(), curdate(), MD5(RAND()))
+    returning content_id;
+END;
+

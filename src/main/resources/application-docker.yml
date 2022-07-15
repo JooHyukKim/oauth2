@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://authdb:3306/oauth2?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://auth-db-all:3306/oauth2?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 1234
     initialization-mode: never # resource 에 있는 schema.sql 을 실행 (기본값: always, 생성안함: never)
@@ -23,5 +23,10 @@ server:
 
 oauth2:
   validity-seconds:
-    access-token: 10
+    access-token: 3600
     refresh-token: 3600
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
