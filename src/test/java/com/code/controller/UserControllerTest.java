@@ -1,7 +1,7 @@
 package com.code.controller;
 
 import com.code.controller.request.JoinRequest;
-import com.code.repository.UserRepository;
+import com.code.repository.UserDetailsRepository;
 import com.code.vo.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -10,12 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
   @Autowired
-  private UserRepository userRepository;
+  private UserDetailsRepository userDetailsRepository;
 
   @Autowired
   private WebApplicationContext context;
@@ -73,13 +71,13 @@ public class UserControllerTest {
 
   private void assertUserNotExist(JoinRequest joinRequest) {
     assertThrows(UsernameNotFoundException.class, () ->
-      userRepository.findByUsername(joinRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("..."))
+      userDetailsRepository.findByUsername(joinRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("..."))
     );
   }
 
   private void assertUserExist(JoinRequest joinRequest) {
     assertDoesNotThrow(() -> {
-      User user = userRepository.findByUsername(joinRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("..."));
+      User user = userDetailsRepository.findByUsername(joinRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("..."));
       assertThat(user.getEmail()).isEqualTo(joinRequest.getEmail());
       assertThat(user.getUsername()).isEqualTo(joinRequest.getUsername());
       assertThat(user.getPassword()).isEqualTo(joinRequest.getPassword());
@@ -101,7 +99,7 @@ public class UserControllerTest {
   @WithAnonymousUser
   void emailCheck_securityBlock() throws Exception {
     // given
-    User user = userRepository.save(User.makeFrom(makeJoinRequest()));
+    User user = userDetailsRepository.save(User.makeFrom(makeJoinRequest()));
 
     // when
     mockMvc.perform(
@@ -114,7 +112,7 @@ public class UserControllerTest {
   @WithMockUser
   void emailCheck_existing() throws Exception {
     // given
-    User user = userRepository.save(User.makeFrom(makeJoinRequest()));
+    User user = userDetailsRepository.save(User.makeFrom(makeJoinRequest()));
 
     // when
     mockMvc.perform(
