@@ -98,7 +98,7 @@ public class OAuthPostUserControllerTest {
 
   @Test
   @WithAnonymousUser
-  void emailCheck_securityBlock() throws Exception {
+  void 이미_등록된_이메일_사용가능여부체크_NOT_ACCEPTABLE_반환() throws Exception {
     // given
     OAuthUser user = OAuthUserRepository.save(OAuthUser.makeFrom(makeJoinRequest()));
 
@@ -106,7 +106,7 @@ public class OAuthPostUserControllerTest {
     mockMvc.perform(
       get("/user/email-check").queryParam("email", user.getEmail())
     ).andExpect(
-      status().isUnauthorized());
+      status().isNotAcceptable());
   }
 
   @Test
