@@ -21,6 +21,7 @@ public class UserController {
     return ResponseEntity.ok().body(null);
   }
 
+
   @GetMapping("email-check")
   public ResponseEntity<Object> emailCheck(@RequestParam("email") String email) {
     boolean emailNotUsed = userService.emailNotUsed(email);
