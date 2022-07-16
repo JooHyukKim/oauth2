@@ -1,4 +1,4 @@
-package com.code.vo;
+package com.code.model.oauth;
 
 import lombok.Data;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;

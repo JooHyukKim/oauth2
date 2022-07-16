@@ -1,7 +1,7 @@
 package com.code.service;
 
 import com.code.repository.UserDetailsRepository;
-import com.code.vo.User;
+import com.code.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

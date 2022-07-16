@@ -1,4 +1,4 @@
-package com.code.vo;
+package com.code.model.oauth;
 
 import com.code.controller.request.JoinRequest;
 import lombok.Getter;

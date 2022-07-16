@@ -2,7 +2,7 @@ package com.code.service;
 
 import com.code.controller.request.JoinRequest;
 import com.code.repository.UserDetailsRepository;
-import com.code.vo.User;
+import com.code.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

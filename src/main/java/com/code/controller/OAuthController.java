@@ -1,6 +1,6 @@
 package com.code.controller;
 
-import com.code.vo.OauthToken;
+import com.code.model.OauthToken;
 import kong.unirest.Unirest;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.web.bind.annotation.RequestMapping;

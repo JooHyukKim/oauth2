@@ -2,7 +2,7 @@ package com.code.controller;
 
 import com.code.controller.request.JoinRequest;
 import com.code.repository.UserDetailsRepository;
-import com.code.vo.User;
+import com.code.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;

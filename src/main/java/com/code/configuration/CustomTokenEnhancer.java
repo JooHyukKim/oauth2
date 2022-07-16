@@ -1,6 +1,6 @@
 package com.code.configuration;
 
-import com.code.vo.User;
+import com.code.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;

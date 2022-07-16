@@ -1,6 +1,6 @@
 package com.code.repository;
 
-import com.code.vo.User;
+import com.code.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
