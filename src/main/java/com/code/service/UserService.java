@@ -1,23 +1,23 @@
 package com.code.service;
 
 import com.code.controller.request.JoinRequest;
-import com.code.repository.UserDetailsRepository;
-import com.code.model.User;
+import com.code.domain.oauth.OAuthUserRepository;
+import com.code.domain.oauth.OAuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
-  private final UserDetailsRepository userDetailsRepository;
+  private final OAuthUserRepository oauthUserRepository;
 
   public void joinNewUser(JoinRequest joinRequest) {
-    User user = User.makeFrom(joinRequest);
+    OAuthUser oauthUser = OAuthUser.makeFrom(joinRequest);
 
-    userDetailsRepository.save(user);
+    oauthUserRepository.save(oauthUser);
   }
 
   public boolean emailNotUsed(String email) {
-    return userDetailsRepository.findFirstByEmail(email).isEmpty();
+    return oauthUserRepository.findFirstByEmail(email).isEmpty();
   }
 }

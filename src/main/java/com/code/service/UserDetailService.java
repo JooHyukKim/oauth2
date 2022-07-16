@@ -1,7 +1,7 @@
 package com.code.service;
 
-import com.code.repository.UserDetailsRepository;
-import com.code.model.User;
+import com.code.domain.oauth.OAuthUserRepository;
+import com.code.domain.oauth.OAuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 public class UserDetailService implements UserDetailsService {
 
   @Autowired
-  private UserDetailsRepository userDetailsRepository;
+  private OAuthUserRepository OAuthUserRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User userInfo = userDetailsRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No such username : " + username));
-    return userInfo;
+    OAuthUser OAuthUserInfo = OAuthUserRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No such username : " + username));
+    return OAuthUserInfo;
   }
 
 }

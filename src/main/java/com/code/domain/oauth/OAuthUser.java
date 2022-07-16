@@ -1,6 +1,7 @@
-package com.code.model.oauth;
+package com.code.domain.oauth;
 
 import com.code.controller.request.JoinRequest;
+import com.code.domain.post.PostUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User implements UserDetails {
+public class OAuthUser implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +40,7 @@ public class User implements UserDetails {
 
   @Column(nullable = true, unique = false)
   private String state; // Y : 정상 회원 , L : 잠긴 계정, P : 패스워드 만료, A : 계정 만료
-  private static final String DEFAULT_STATE = "Y";
+  public static final String DEFAULT_STATE = "Y";
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -91,14 +92,20 @@ public class User implements UserDetails {
     return false;
   }
 
-  public static User makeFrom(JoinRequest joinRequest) {
-    User user = new User();
-    user.setUsername(joinRequest.getUsername());
-    user.setPassword(joinRequest.getPassword());
-    user.setEmail(joinRequest.getEmail());
-    user.setState(DEFAULT_STATE);
-    user.setNickname(joinRequest.getUsername());
-    return user;
+  public static OAuthUser makeFrom(JoinRequest joinRequest) {
+    OAuthUser OAuthUser = new OAuthUser();
+    OAuthUser.setUsername(joinRequest.getUsername());
+    OAuthUser.setPassword(joinRequest.getPassword());
+    OAuthUser.setEmail(joinRequest.getEmail());
+    OAuthUser.setState(DEFAULT_STATE);
+    OAuthUser.setNickname(joinRequest.getUsername());
+    return OAuthUser;
   }
 
+  public PostUser toPostUser() {
+    PostUser postUser = new PostUser();
+    postUser.setId(this.id);
+    postUser.setUsername(this.username);
+    return postUser;
+  }
 }

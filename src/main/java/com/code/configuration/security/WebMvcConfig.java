@@ -1,4 +1,4 @@
-package com.code.configuration;
+package com.code.configuration.security;
 
 import com.code.service.UserDetailService;
 import org.springframework.context.annotation.Bean;
