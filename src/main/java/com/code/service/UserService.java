@@ -6,6 +6,7 @@ import com.code.domain.oauth.OAuthUser;
 import com.code.domain.post.PostUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -14,7 +15,10 @@ public class UserService {
   private final PostUserRepository postUserRepository;
 
   public void joinNewUser(JoinRequest joinRequest) {
+    joinRequest.validPasswordsMatch();
+
     OAuthUser oauthUser = OAuthUser.makeFrom(joinRequest);
+
     OAuthUser savedOauthUser = oauthUserRepository.save(oauthUser);
     postUserRepository.save(savedOauthUser.toPostUser());
   }

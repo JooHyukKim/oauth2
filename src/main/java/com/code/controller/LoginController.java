@@ -39,16 +39,6 @@ public class LoginController {
     ResponseEntity<OAuth2AccessToken> response = tokenEndpoint.postAccessToken(principal, parameters);
     String grantType = StringUtils.defaultString(parameters.get("grant_type"), "");
 
-    // 토큰 발행 방식에 따른 비즈니스 코드 작성
-    if (StringUtils.equals("authorization_code", grantType)) {
-
-    } else if (StringUtils.equals("refresh_token", grantType)) {
-
-    } else if (StringUtils.equals("password", grantType)) {
-
-    } else if (StringUtils.equals("client_credentials", grantType)) {
-
-    }
     log.info("## get token => {} | {}", response.getBody().getAdditionalInformation(), grantType);
     return response;
   }

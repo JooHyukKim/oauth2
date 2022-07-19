@@ -7,8 +7,8 @@ spring:
     password: 1234
     initialization-mode: never # resource 에 있는 schema.sql 을 실행 (기본값: always, 생성안함: never
   post-datasource:
-    url: jdbc:mariadb://api-db-performance:3306/post?serverTimezone=UTC&characterEncoding=UTF-8
-    jdbcUrl: jdbc:mariadb://api-db-performance:3306/post
+    url: jdbc:mariadb://api-db-develop:3306/post?serverTimezone=UTC&characterEncoding=UTF-8
+    jdbcUrl: jdbc:mariadb://api-db-develop:3306/post?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 1234

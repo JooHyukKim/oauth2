@@ -24,7 +24,7 @@ public class JoinRequest {
   @NotEmpty
   private String passwordCheck;
 
-  public boolean passwordsMatch() {
+  public boolean validPasswordsMatch() {
     return password.equals(passwordCheck);
   }
 }
